@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+       <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=xfhhaTThl11qYVrqLZii6w8qE5ggnhrY&__ec_v__=20190126"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+var data = echarts.dataTool.prepareBoxplotData([
+    [22.01, 29.66, 41.09, 24.09,  7.77, 22.52, 19.82, 37.43, 39.85,
+     32.67, 23.39, 33.49, 31.82, 21.55, 24.52, 30.32, 11.83, 42.26,
+     22.33, 18.78, 14.35, 22.84, 35.  , 25.57, 24.43, 16.29, 23.87,
+     23.56, 47.56, 16.69, 25.41, 25.77, 27.45, 20.22, 22.45, 23.09,
+     22.  , 18.83, 23.04, 17.38, 24.03, 18.98, 22.53, 16.98, 13.  ,
+     32.28, 25.22, 32.01, 22.48, 29.4 , 37.3 , 20.79, 31.05, 10.04,
+     16.96, 26.94, 20.08, 18.92, 23.83, 16.35, 18.99, 25.75],
+    [48.78, 36.88, 37.  , 29.77, 37.26, 39.64, 44.97, 57.1 , 50.79,
+     44.23, 39.82, 30.07, 47.78, 33.15, 28.77, 49.82, 36.71, 49.14,
+     43.41, 29.  , 15.94, 31.51, 52.23, 24.44, 39.83, 32.22, 45.48,
+     30.42, 48.25, 24.1 , 38.6 , 31.55, 38.66, 37.47, 33.66, 24.63,
+     26.04, 32.59, 30.93, 27.58, 24.26, 56.05, 27.17, 16.75, 26.91,
+     48.76, 34.47, 48.16, 16.15, 43.82, 57.45, 30.25, 34.65, 22.2 ,
+     22.38, 39.87, 30.9 , 26.76, 24.56, 32.62, 24.85, 24.46]
+]);
+
+option = {
+    tooltip: {
+        trigger: 'item',
+        axisPointer: {
+            type: 'shadow'
+        }
+    },
+    toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                },
+    grid: {
+        left: '10%',
+        right: '10%',
+        bottom: '15%'
+    },
+    xAxis: {
+        type: 'category',
+        data: ['All-Payer', 'Medicaid'],
+        boundaryGap: true,
+        nameGap: 30,
+        splitArea: {
+            show: false
+        },
+        splitLine: {
+            show: false
+        }
+    },
+    yAxis: {
+        type: 'value',
+        name: 'Observed Rate Per 100',
+        splitArea: {
+            show: true
+        }
+    },
+    series: [
+        {
+            name: 'boxplot',
+            type: 'boxplot',
+            data: data.boxData,
+            tooltip: {
+                formatter: function (param) {
+                    return [
+                        'Experiment ' + param.name + ': ',
+                        'upper: ' + param.data[5],
+                        'Q3: ' + param.data[4],
+                        'median: ' + param.data[3],
+                        'Q1: ' + param.data[2],
+                        'lower: ' + param.data[1]
+                    ].join('<br/>');
+                }
+            }
+        },
+        {
+            name: 'outlier',
+            type: 'scatter',
+            data: data.outliers
+        }
+    ]
+};;
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+       </script>
+   </body>
+</html>

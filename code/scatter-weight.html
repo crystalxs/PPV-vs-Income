@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+       <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=xfhhaTThl11qYVrqLZii6w8qE5ggnhrY&__ec_v__=20190126"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+option = {
+    grid: {
+        left: '3%',
+        right: '7%',
+        bottom: '3%',
+        containLabel: true
+    },
+    tooltip : {
+        // trigger: 'axis',
+        showDelay : 0,
+        formatter : function (params) {
+            if (params.value.length > 1) {
+                return params.seriesName + ' :<br/>'
+                + params.value[1] + '% ';
+            }
+            else {
+                return params.seriesName + ' :<br/>'
+                + params.name + ' : '
+                + params.value + '% ';
+            }
+        },
+        axisPointer:{
+            show: true,
+            type : 'cross',
+            lineStyle: {
+                type : 'dashed',
+                width : 1
+            }
+        }
+    },
+    toolbox: {
+        feature: {
+            saveAsImage: {}
+        }
+    },
+    brush: {
+    },
+    legend: {
+        data: ['Medicaid PPV','All-Payer PPV'],
+        left: 'center'
+    },
+    xAxis : [
+        {
+            type : 'value',
+            scale:true,
+            splitLine: {
+                show: false
+            },
+            name: 'NY AGI (000)'
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+            scale:true,
+            axisLabel : {
+                formatter: '{value} %'
+            },
+            splitLine: {
+                show: false
+            },
+            name: 'PPV'
+        }
+    ],
+    series : [
+        {
+            name:'Medicaid PPV',
+            type:'scatter',
+            data: [[ 58.09676626,  48.78      ],
+                   [ 41.5219476 ,  36.88      ],
+                   [ 31.43718504,  37.        ],
+                   [ 45.15411208,  29.77      ],
+                   [ 38.98639468,  37.26      ],
+                   [ 44.78457947,  39.64      ],
+                   [ 39.55705751,  44.97      ],
+                   [ 45.58743343,  57.1       ],
+                   [ 37.97313515,  50.79      ],
+                   [ 42.28126023,  44.23      ],
+                   [ 57.57493755,  39.82      ],
+                   [ 41.82408326,  30.07      ],
+                   [ 38.07209308,  47.78      ],
+                   [ 64.32467083,  33.15      ],
+                   [ 51.69017216,  28.77      ],
+                   [ 42.31738256,  49.82      ],
+                   [ 38.51786297,  36.71      ],
+                   [ 39.63324253,  49.14      ],
+                   [ 42.46400767,  43.41      ],
+                   [ 45.65415199,  29.        ],
+                   [ 36.98552678,  15.94      ],
+                   [ 39.66530712,  31.51      ],
+                   [ 40.73977347,  52.23      ],
+                   [ 49.96940565,  24.44      ],
+                   [ 40.29452023,  39.83      ],
+                   [ 45.21195426,  32.22      ],
+                   [ 48.69633516,  45.48      ],
+                   [ 53.67383823,  30.42      ],
+                   [ 38.71285444,  48.25      ],
+                   [ 98.8343549 ,  24.1       ],
+                   [200.30142782,  38.6       ],
+                   [ 43.06517564,  31.55      ],
+                   [ 42.79588743,  38.66      ],
+                   [ 54.15449526,  37.47      ],
+                   [ 55.29357198,  33.66      ],
+                   [ 60.03808314,  24.63      ],
+                   [ 37.69511774,  26.04      ],
+                   [ 42.29662093,  32.59      ],
+                   [ 43.66891311,  30.93      ],
+                   [ 81.51716606,  27.58      ],
+                   [ 43.78741776,  24.26      ],
+                   [ 50.24433974,  56.05      ],
+                   [ 58.89378009,  27.17      ],
+                   [ 76.48584154,  16.75      ],
+                   [ 64.21043089,  26.91      ],
+                   [ 50.59423939,  48.76      ],
+                   [ 41.43821249,  34.47      ],
+                   [ 40.75064867,  48.16      ],
+                   [ 40.40096279,  16.15      ],
+                   [ 45.79210288,  43.82      ],
+                   [ 40.36822846,  57.45      ],
+                   [ 76.44339717,  30.25      ],
+                   [ 43.57015297,  34.65      ],
+                   [ 44.95506556,  22.2       ],
+                   [ 58.24705532,  22.38      ],
+                   [ 51.47884709,  39.87      ],
+                   [ 47.99491818,  30.9       ],
+                   [ 40.44427514,  26.76      ],
+                   [ 43.51584674,  24.56      ],
+                   [145.535268  ,  32.62      ],
+                   [ 42.53966257,  24.85      ],
+                   [ 39.56789759,  24.46      ]],
+            markPoint : {
+                data : [
+                    {type : 'max', name: '最大值'},
+                    {type : 'min', name: '最小值'}
+                ]
+            },
+        },
+        {
+            name:'All-Payer PPV',
+            type:'scatter',
+            data: [[ 58.09676626,  22.01      ],
+                   [ 41.5219476 ,  29.66      ],
+                   [ 31.43718504,  41.09      ],
+                   [ 45.15411208,  24.09      ],
+                   [ 38.98639468,   7.77      ],
+                   [ 44.78457947,  22.52      ],
+                   [ 39.55705751,  19.82      ],
+                   [ 45.58743343,  37.43      ],
+                   [ 37.97313515,  39.85      ],
+                   [ 42.28126023,  32.67      ],
+                   [ 57.57493755,  23.39      ],
+                   [ 41.82408326,  33.49      ],
+                   [ 38.07209308,  31.82      ],
+                   [ 64.32467083,  21.55      ],
+                   [ 51.69017216,  24.52      ],
+                   [ 42.31738256,  30.32      ],
+                   [ 38.51786297,  11.83      ],
+                   [ 39.63324253,  42.26      ],
+                   [ 42.46400767,  22.33      ],
+                   [ 45.65415199,  18.78      ],
+                   [ 36.98552678,  14.35      ],
+                   [ 39.66530712,  22.84      ],
+                   [ 40.73977347,  35.        ],
+                   [ 49.96940565,  25.57      ],
+                   [ 40.29452023,  24.43      ],
+                   [ 45.21195426,  16.29      ],
+                   [ 48.69633516,  23.87      ],
+                   [ 53.67383823,  23.56      ],
+                   [ 38.71285444,  47.56      ],
+                   [ 98.8343549 ,  16.69      ],
+                   [200.30142782,  25.41      ],
+                   [ 43.06517564,  25.77      ],
+                   [ 42.79588743,  27.45      ],
+                   [ 54.15449526,  20.22      ],
+                   [ 55.29357198,  22.45      ],
+                   [ 60.03808314,  23.09      ],
+                   [ 37.69511774,  22.        ],
+                   [ 42.29662093,  18.83      ],
+                   [ 43.66891311,  23.04      ],
+                   [ 81.51716606,  17.38      ],
+                   [ 43.78741776,  24.03      ],
+                   [ 50.24433974,  18.98      ],
+                   [ 58.89378009,  22.53      ],
+                   [ 76.48584154,  16.98      ],
+                   [ 64.21043089,  13.        ],
+                   [ 50.59423939,  32.28      ],
+                   [ 41.43821249,  25.22      ],
+                   [ 40.75064867,  32.01      ],
+                   [ 40.40096279,  22.48      ],
+                   [ 45.79210288,  29.4       ],
+                   [ 40.36822846,  37.3       ],
+                   [ 76.44339717,  20.79      ],
+                   [ 43.57015297,  31.05      ],
+                   [ 44.95506556,  10.04      ],
+                   [ 58.24705532,  16.96      ],
+                   [ 51.47884709,  26.94      ],
+                   [ 47.99491818,  20.08      ],
+                   [ 40.44427514,  18.92      ],
+                   [ 43.51584674,  23.83      ],
+                   [145.535268  ,  16.35      ],
+                   [ 42.53966257,  18.99      ],
+                   [ 39.56789759,  25.75      ]],
+            markPoint : {
+                data : [
+                    {type : 'max', name: '最大值'},
+                    {type : 'min', name: '最小值'}
+                ]
+            },
+        }
+    ]
+};
+;
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+       </script>
+   </body>
+</html>

@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+p1 {
+  font: 16px Courier;
+  text-align: center;
+}
+.bar-positive {
+  fill: steelblue;
+  opacity: 0.8;
+}
+
+.bar-negative {
+  fill: darkorange;
+  opacity: 0.8;
+}
+
+.bar-positive:hover {
+  fill: #23415A ;
+}
+
+.bar-negative:hover {
+  fill: orangered ;
+}
+
+.axis text {
+  font: 10px Courier;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.y.axis path {
+  display: none;
+}
+
+.tooltip {
+  font: 12px Courier;
+  background: #eee;
+    box-shadow: 0 0 5px #999999;
+    color: #333;
+    right: 30px;
+    padding: 10px;
+    position: absolute;
+    text-align: left;
+    top: 95px;
+    z-index: 10;
+    display: block;
+    opacity: 0;
+}
+
+.pie {
+    right: 0px;
+    padding: 10px;
+    position: absolute;
+    bottom: 40px;
+    z-index: 10;
+}
+
+path {  stroke: #fff; }
+path:hover {  opacity:0.8; }
+.slice text {
+    z-index: 10;
+    font: 12px Courier;
+} 
+polyline{
+	opacity: .3;
+	stroke: black;
+	stroke-width: 2px;
+    fill: none;
+    z-index: 11;
+}
+</style>
+<body>
+<!-- <button id="byAGI"> Sort by Adjusted Gross Income Per Person (from return fillings)</button> -->
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script>
+// Difference in Mediciad PPV rates and all-payer PPV rates
+var data = [{"observed_rate_per_100_all_payer":22.01,"patient_county_name":"Albany","observed_rate_per_100_medicaid":48.78,"difference_in_rates":26.77,"county_name":"Albany","ny_agi_of_all_returns_in_thousands":8432745.6229999997},
+            {"observed_rate_per_100_all_payer":29.66,"patient_county_name":"Allegany","observed_rate_per_100_medicaid":36.88,"difference_in_rates":7.22,"county_name":"Allegany","ny_agi_of_all_returns_in_thousands":755159.661},
+            {"observed_rate_per_100_all_payer":41.09,"patient_county_name":"Bronx","observed_rate_per_100_medicaid":37.0,"difference_in_rates":-4.09,"county_name":"Bronx","ny_agi_of_all_returns_in_thousands":19385425.7850000001},
+            {"observed_rate_per_100_all_payer":24.09,"patient_county_name":"Broome","observed_rate_per_100_medicaid":29.77,"difference_in_rates":5.68,"county_name":"Broome","ny_agi_of_all_returns_in_thousands":4077235.7039999999},
+            {"observed_rate_per_100_all_payer":7.77,"patient_county_name":"Cattaraugus","observed_rate_per_100_medicaid":37.26,"difference_in_rates":29.49,"county_name":"Cattaraugus","ny_agi_of_all_returns_in_thousands":1277701.1129999999},
+            {"observed_rate_per_100_all_payer":22.52,"patient_county_name":"Cayuga","observed_rate_per_100_medicaid":39.64,"difference_in_rates":17.12,"county_name":"Cayuga","ny_agi_of_all_returns_in_thousands":1534274.9080000001},
+            {"observed_rate_per_100_all_payer":19.82,"patient_county_name":"Chautauqua","observed_rate_per_100_medicaid":44.97,"difference_in_rates":25.15,"county_name":"Chautauqua","ny_agi_of_all_returns_in_thousands":2175479.9350000001},
+            {"observed_rate_per_100_all_payer":37.43,"patient_county_name":"Chemung","observed_rate_per_100_medicaid":57.1,"difference_in_rates":19.67,"county_name":"Chemung","ny_agi_of_all_returns_in_thousands":1726715.216},
+            {"observed_rate_per_100_all_payer":39.85,"patient_county_name":"Chenango","observed_rate_per_100_medicaid":50.79,"difference_in_rates":10.94,"county_name":"Chenango","ny_agi_of_all_returns_in_thousands":827434.615},
+            {"observed_rate_per_100_all_payer":32.67,"patient_county_name":"Clinton","observed_rate_per_100_medicaid":44.23,"difference_in_rates":11.56,"county_name":"Clinton","ny_agi_of_all_returns_in_thousands":1473036.825},
+            {"observed_rate_per_100_all_payer":23.39,"patient_county_name":"Columbia","observed_rate_per_100_medicaid":39.82,"difference_in_rates":16.43,"county_name":"Columbia","ny_agi_of_all_returns_in_thousands":1623498.0889999999},
+            {"observed_rate_per_100_all_payer":33.49,"patient_county_name":"Cortland","observed_rate_per_100_medicaid":30.07,"difference_in_rates":-3.42,"county_name":"Cortland","ny_agi_of_all_returns_in_thousands":840873.194},
+            {"observed_rate_per_100_all_payer":31.82,"patient_county_name":"Delaware","observed_rate_per_100_medicaid":47.78,"difference_in_rates":15.96,"county_name":"Delaware","ny_agi_of_all_returns_in_thousands":735438.622},
+            {"observed_rate_per_100_all_payer":21.55,"patient_county_name":"Dutchess","observed_rate_per_100_medicaid":33.15,"difference_in_rates":11.6,"county_name":"Dutchess","ny_agi_of_all_returns_in_thousands":8488991.1339999996},
+            {"observed_rate_per_100_all_payer":24.52,"patient_county_name":"Erie","observed_rate_per_100_medicaid":28.77,"difference_in_rates":4.25,"county_name":"Erie","ny_agi_of_all_returns_in_thousands":22090001.8330000006},
+            {"observed_rate_per_100_all_payer":30.32,"patient_county_name":"Essex","observed_rate_per_100_medicaid":49.82,"difference_in_rates":19.5,"county_name":"Essex","ny_agi_of_all_returns_in_thousands":717787.443},
+            {"observed_rate_per_100_all_payer":11.83,"patient_county_name":"Franklin","observed_rate_per_100_medicaid":36.71,"difference_in_rates":24.88,"county_name":"Franklin","ny_agi_of_all_returns_in_thousands":737000.79},
+            {"observed_rate_per_100_all_payer":42.26,"patient_county_name":"Fulton","observed_rate_per_100_medicaid":49.14,"difference_in_rates":6.88,"county_name":"Fulton","ny_agi_of_all_returns_in_thousands":935067.091},
+            {"observed_rate_per_100_all_payer":22.33,"patient_county_name":"Genesee","observed_rate_per_100_medicaid":43.41,"difference_in_rates":21.08,"county_name":"Genesee","ny_agi_of_all_returns_in_thousands":1156464.7849999999},
+            {"observed_rate_per_100_all_payer":18.78,"patient_county_name":"Greene","observed_rate_per_100_medicaid":29.0,"difference_in_rates":10.22,"county_name":"Greene","ny_agi_of_all_returns_in_thousands":953669.581},
+            {"observed_rate_per_100_all_payer":14.35,"patient_county_name":"Hamilton","observed_rate_per_100_medicaid":15.94,"difference_in_rates":1.59,"county_name":"Hamilton","ny_agi_of_all_returns_in_thousands":96680.167},
+            {"observed_rate_per_100_all_payer":22.84,"patient_county_name":"Herkimer","observed_rate_per_100_medicaid":31.51,"difference_in_rates":8.67,"county_name":"Herkimer","ny_agi_of_all_returns_in_thousands":1058905.0390000001},
+            {"observed_rate_per_100_all_payer":35.0,"patient_county_name":"Jefferson","observed_rate_per_100_medicaid":52.23,"difference_in_rates":17.23,"county_name":"Jefferson","ny_agi_of_all_returns_in_thousands":1673060.277},
+            {"observed_rate_per_100_all_payer":25.57,"patient_county_name":"Kings","observed_rate_per_100_medicaid":24.44,"difference_in_rates":-1.13,"county_name":"Kings","ny_agi_of_all_returns_in_thousands":56877626.0109999999},
+            {"observed_rate_per_100_all_payer":24.43,"patient_county_name":"Lewis","observed_rate_per_100_medicaid":39.83,"difference_in_rates":15.4,"county_name":"Lewis","ny_agi_of_all_returns_in_thousands":446060.339},
+            {"observed_rate_per_100_all_payer":16.29,"patient_county_name":"Livingston","observed_rate_per_100_medicaid":32.22,"difference_in_rates":15.93,"county_name":"Livingston","ny_agi_of_all_returns_in_thousands":1215794.662},
+            {"observed_rate_per_100_all_payer":23.87,"patient_county_name":"Madison","observed_rate_per_100_medicaid":45.48,"difference_in_rates":21.61,"county_name":"Madison","ny_agi_of_all_returns_in_thousands":1448569.882},
+            {"observed_rate_per_100_all_payer":23.56,"patient_county_name":"Monroe","observed_rate_per_100_medicaid":30.42,"difference_in_rates":6.86,"county_name":"Monroe","ny_agi_of_all_returns_in_thousands":18625143.9100000001},
+            {"observed_rate_per_100_all_payer":47.56,"patient_county_name":"Montgomery","observed_rate_per_100_medicaid":48.25,"difference_in_rates":0.69,"county_name":"Montgomery","ny_agi_of_all_returns_in_thousands":859309.23},
+            {"observed_rate_per_100_all_payer":16.69,"patient_county_name":"Nassau","observed_rate_per_100_medicaid":24.1,"difference_in_rates":7.41,"county_name":"Nassau","ny_agi_of_all_returns_in_thousands":66795320.9090000018},
+            {"observed_rate_per_100_all_payer":25.41,"patient_county_name":"New York","observed_rate_per_100_medicaid":38.6,"difference_in_rates":13.19,"county_name":"New York","ny_agi_of_all_returns_in_thousands":177432813.5},
+            {"observed_rate_per_100_all_payer":25.77,"patient_county_name":"Niagara","observed_rate_per_100_medicaid":31.55,"difference_in_rates":5.78,"county_name":"Niagara","ny_agi_of_all_returns_in_thousands":4294717.7060000002},
+            {"observed_rate_per_100_all_payer":27.45,"patient_county_name":"Oneida","observed_rate_per_100_medicaid":38.66,"difference_in_rates":11.21,"county_name":"Oneida","ny_agi_of_all_returns_in_thousands":4321742.6919999998},
+            {"observed_rate_per_100_all_payer":20.22,"patient_county_name":"Onondaga","observed_rate_per_100_medicaid":37.47,"difference_in_rates":17.25,"county_name":"Onondaga","ny_agi_of_all_returns_in_thousands":11531333.2929999996},
+            {"observed_rate_per_100_all_payer":22.45,"patient_county_name":"Ontario","observed_rate_per_100_medicaid":33.66,"difference_in_rates":11.21,"county_name":"Ontario","ny_agi_of_all_returns_in_thousands":2812065.1899999999},
+            {"observed_rate_per_100_all_payer":23.09,"patient_county_name":"Orange","observed_rate_per_100_medicaid":24.63,"difference_in_rates":1.54,"county_name":"Orange","ny_agi_of_all_returns_in_thousands":9972865.9519999996},
+            {"observed_rate_per_100_all_payer":22.0,"patient_county_name":"Orleans","observed_rate_per_100_medicaid":26.04,"difference_in_rates":4.04,"county_name":"Orleans","ny_agi_of_all_returns_in_thousands":663697.938},
+            {"observed_rate_per_100_all_payer":18.83,"patient_county_name":"Oswego","observed_rate_per_100_medicaid":32.59,"difference_in_rates":13.76,"county_name":"Oswego","ny_agi_of_all_returns_in_thousands":2150825.4709999999},
+            {"observed_rate_per_100_all_payer":23.04,"patient_county_name":"Otsego","observed_rate_per_100_medicaid":30.93,"difference_in_rates":7.89,"county_name":"Otsego","ny_agi_of_all_returns_in_thousands":1110718.8049999999},
+            {"observed_rate_per_100_all_payer":17.38,"patient_county_name":"Putnam","observed_rate_per_100_medicaid":27.58,"difference_in_rates":10.2,"county_name":"Putnam","ny_agi_of_all_returns_in_thousands":3822013.8480000002},
+            {"observed_rate_per_100_all_payer":24.03,"patient_county_name":"Queens","observed_rate_per_100_medicaid":24.26,"difference_in_rates":0.23,"county_name":"Queens","ny_agi_of_all_returns_in_thousands":46877014.1679999977},
+            {"observed_rate_per_100_all_payer":18.98,"patient_county_name":"Rensselaer","observed_rate_per_100_medicaid":56.05,"difference_in_rates":37.07,"county_name":"Rensselaer","ny_agi_of_all_returns_in_thousands":3697531.2059999998},
+            {"observed_rate_per_100_all_payer":22.53,"patient_county_name":"Richmond","observed_rate_per_100_medicaid":27.17,"difference_in_rates":4.64,"county_name":"Richmond","ny_agi_of_all_returns_in_thousands":12207326.0559999999},
+            {"observed_rate_per_100_all_payer":16.98,"patient_county_name":"Rockland","observed_rate_per_100_medicaid":16.75,"difference_in_rates":-0.23,"county_name":"Rockland","ny_agi_of_all_returns_in_thousands":10596577.9440000001},
+            {"observed_rate_per_100_all_payer":13.0,"patient_county_name":"Saratoga","observed_rate_per_100_medicaid":26.91,"difference_in_rates":13.91,"county_name":"Saratoga","ny_agi_of_all_returns_in_thousands":6928433.9139999999},
+            {"observed_rate_per_100_all_payer":32.28,"patient_county_name":"Schenectady","observed_rate_per_100_medicaid":48.76,"difference_in_rates":16.48,"county_name":"Schenectady","ny_agi_of_all_returns_in_thousands":3732438.2280000001},
+            {"observed_rate_per_100_all_payer":25.22,"patient_county_name":"Schoharie","observed_rate_per_100_medicaid":34.47,"difference_in_rates":9.25,"county_name":"Schoharie","ny_agi_of_all_returns_in_thousands":550713.844},
+            {"observed_rate_per_100_all_payer":32.01,"patient_county_name":"Schuyler","observed_rate_per_100_medicaid":48.16,"difference_in_rates":16.15,"county_name":"Schuyler","ny_agi_of_all_returns_in_thousands":331262.023},
+            {"observed_rate_per_100_all_payer":22.48,"patient_county_name":"Seneca","observed_rate_per_100_medicaid":16.15,"difference_in_rates":-6.33,"county_name":"Seneca","ny_agi_of_all_returns_in_thousands":598176.655},
+            {"observed_rate_per_100_all_payer":29.4,"patient_county_name":"Steuben","observed_rate_per_100_medicaid":43.82,"difference_in_rates":14.42,"county_name":"Steuben","ny_agi_of_all_returns_in_thousands":1941127.2409999999},
+            {"observed_rate_per_100_all_payer":37.3,"patient_county_name":"St Lawrence","observed_rate_per_100_medicaid":57.45,"difference_in_rates":20.15,"county_name":"St Lawrence","ny_agi_of_all_returns_in_thousands":1653724.8470000001},
+            {"observed_rate_per_100_all_payer":20.79,"patient_county_name":"Suffolk","observed_rate_per_100_medicaid":30.25,"difference_in_rates":9.46,"county_name":"Suffolk","ny_agi_of_all_returns_in_thousands":55812241.5960000008},
+            {"observed_rate_per_100_all_payer":31.05,"patient_county_name":"Sullivan","observed_rate_per_100_medicaid":34.65,"difference_in_rates":3.6,"county_name":"Sullivan","ny_agi_of_all_returns_in_thousands":1365183.6029999999},
+            {"observed_rate_per_100_all_payer":10.04,"patient_county_name":"Tioga","observed_rate_per_100_medicaid":22.2,"difference_in_rates":12.16,"county_name":"Tioga","ny_agi_of_all_returns_in_thousands":999081.377},
+            {"observed_rate_per_100_all_payer":16.96,"patient_county_name":"Tompkins","observed_rate_per_100_medicaid":22.38,"difference_in_rates":5.42,"county_name":"Tompkins","ny_agi_of_all_returns_in_thousands":2246880.159},
+            {"observed_rate_per_100_all_payer":26.94,"patient_county_name":"Ulster","observed_rate_per_100_medicaid":39.87,"difference_in_rates":12.93,"county_name":"Ulster","ny_agi_of_all_returns_in_thousands":4149040.639},
+            {"observed_rate_per_100_all_payer":20.08,"patient_county_name":"Warren","observed_rate_per_100_medicaid":30.9,"difference_in_rates":10.82,"county_name":"Warren","ny_agi_of_all_returns_in_thousands":1545676.3400000001},
+            {"observed_rate_per_100_all_payer":18.92,"patient_county_name":"Washington","observed_rate_per_100_medicaid":26.76,"difference_in_rates":7.84,"county_name":"Washington","ny_agi_of_all_returns_in_thousands":1095716.3019999999},
+            {"observed_rate_per_100_all_payer":23.83,"patient_county_name":"Wayne","observed_rate_per_100_medicaid":24.56,"difference_in_rates":0.73,"county_name":"Wayne","ny_agi_of_all_returns_in_thousands":1856690.6329999999},
+            {"observed_rate_per_100_all_payer":16.35,"patient_county_name":"Westchester","observed_rate_per_100_medicaid":32.62,"difference_in_rates":16.27,"county_name":"Westchester","ny_agi_of_all_returns_in_thousands":66090475.9029999971},
+            {"observed_rate_per_100_all_payer":18.99,"patient_county_name":"Wyoming","observed_rate_per_100_medicaid":24.85,"difference_in_rates":5.86,"county_name":"Wyoming","ny_agi_of_all_returns_in_thousands":743550.762},
+            {"observed_rate_per_100_all_payer":25.75,"patient_county_name":"Yates","observed_rate_per_100_medicaid":24.46,"difference_in_rates":-1.29,"county_name":"Yates","ny_agi_of_all_returns_in_thousands":421121.134}];
+
+data.sort(function(a, b) {
+    return d3.descending(a.difference_in_rates, b.difference_in_rates)
+  });
+
+var incomeData=[{"county_name":"Albany","proportion":{"LIS":33799.0,"LIF":18726.0,"non-medicaid":237775.0}},{"county_name":"Allegany","proportion":{"LIS":5035.0,"LIF":2959.0,"non-medicaid":28380.0}},{"county_name":"Bronx","proportion":{"LIS":180344.0,"LIF":125775.0,"non-medicaid":927161.0}},{"county_name":"Broome","proportion":{"LIS":23834.0,"LIF":14315.0,"non-medicaid":142443.0}},{"county_name":"Cattaraugus","proportion":{"LIS":8929.0,"LIF":5490.0,"non-medicaid":51127.0}},{"county_name":"Cayuga","proportion":{"LIS":8503.0,"LIF":5184.0,"non-medicaid":54831.0}},{"county_name":"Chautauqua","proportion":{"LIS":15302.0,"LIF":9484.0,"non-medicaid":85206.0}},{"county_name":"Chemung","proportion":{"LIS":9803.0,"LIF":5966.0,"non-medicaid":59985.0}},{"county_name":"Chenango","proportion":{"LIS":5705.0,"LIF":3223.0,"non-medicaid":34652.0}},{"county_name":"Clinton","proportion":{"LIS":8896.0,"LIF":5147.0,"non-medicaid":55635.0}},{"county_name":"Columbia","proportion":{"LIS":6857.0,"LIF":3971.0,"non-medicaid":45568.0}},{"county_name":"Cortland","proportion":{"LIS":4812.0,"LIF":3020.0,"non-medicaid":32378.0}},{"county_name":"Delaware","proportion":{"LIS":5614.0,"LIF":3054.0,"non-medicaid":29966.0}},{"county_name":"Dutchess","proportion":{"LIS":29927.0,"LIF":15927.0,"non-medicaid":218088.0}},{"county_name":"Erie","proportion":{"LIS":107387.0,"LIF":64098.0,"non-medicaid":683223.0}},{"county_name":"Essex","proportion":{"LIS":4618.0,"LIF":2425.0,"non-medicaid":26881.0}},{"county_name":"Franklin","proportion":{"LIS":5399.0,"LIF":3058.0,"non-medicaid":29811.0}},{"county_name":"Fulton","proportion":{"LIS":6023.0,"LIF":3588.0,"non-medicaid":37575.0}},{"county_name":"Genesee","proportion":{"LIS":6846.0,"LIF":3942.0,"non-medicaid":43680.0}},{"county_name":"Grand Total, Full-Year Resident","proportion":{"LIS":2135228.0,"LIF":1342659.0,"non-medicaid":14686485.0}},{"county_name":"Greene","proportion":{"LIS":5543.0,"LIF":3166.0,"non-medicaid":33069.0}},{"county_name":"Hamilton","proportion":{"LIS":810.0,"LIF":412.0,"non-medicaid":3991.0}},{"county_name":"Herkimer","proportion":{"LIS":6643.0,"LIF":4091.0,"non-medicaid":42658.0}},{"county_name":"Jefferson","proportion":{"LIS":10608.0,"LIF":6831.0,"non-medicaid":64695.0}},{"county_name":"Kings","proportion":{"LIS":269938.0,"LIF":206505.0,"non-medicaid":1800055.0}},{"county_name":"Lewis","proportion":{"LIS":2746.0,"LIF":1609.0,"non-medicaid":17785.0}},{"county_name":"Livingston","proportion":{"LIS":6676.0,"LIF":3662.0,"non-medicaid":43444.0}},{"county_name":"Madison","proportion":{"LIS":7123.0,"LIF":4387.0,"non-medicaid":47984.0}},{"county_name":"Monroe","proportion":{"LIS":82295.0,"LIF":50209.0,"non-medicaid":561508.0}},{"county_name":"Montgomery","proportion":{"LIS":5685.0,"LIF":3505.0,"non-medicaid":35204.0}},{"county_name":"NYS Unclassified +","proportion":{"LIS":12.0,"LIF":0.0,"non-medicaid":52.0}},{"county_name":"Nassau","proportion":{"LIS":142875.0,"LIF":76968.0,"non-medicaid":1131819.0}},{"county_name":"New York","proportion":{"LIS":174281.0,"LIF":102673.0,"non-medicaid":1494704.0}},{"county_name":"Niagara","proportion":{"LIS":25867.0,"LIF":15500.0,"non-medicaid":158085.0}},{"county_name":"Oneida","proportion":{"LIS":26765.0,"LIF":15835.0,"non-medicaid":159370.0}},{"county_name":"Onondaga","proportion":{"LIS":51599.0,"LIF":29883.0,"non-medicaid":344386.0}},{"county_name":"Ontario","proportion":{"LIS":12362.0,"LIF":7172.0,"non-medicaid":82180.0}},{"county_name":"Orange","proportion":{"LIS":36141.0,"LIF":23616.0,"non-medicaid":272461.0}},{"county_name":"Orleans","proportion":{"LIS":4490.0,"LIF":2729.0,"non-medicaid":27926.0}},{"county_name":"Oswego","proportion":{"LIS":12716.0,"LIF":7840.0,"non-medicaid":81146.0}},{"county_name":"Otsego","proportion":{"LIS":6732.0,"LIF":3839.0,"non-medicaid":40299.0}},{"county_name":"Putnam","proportion":{"LIS":9966.0,"LIF":4738.0,"non-medicaid":79068.0}},{"county_name":"Queens","proportion":{"LIS":265088.0,"LIF":181623.0,"non-medicaid":1694407.0}},{"county_name":"Rensselaer","proportion":{"LIS":17377.0,"LIF":9325.0,"non-medicaid":120480.0}},{"county_name":"Residence Unknown ++","proportion":{"LIS":553.0,"LIF":0.0,"non-medicaid":4019.0}},{"county_name":"Richmond","proportion":{"LIS":48760.0,"LIF":26694.0,"non-medicaid":339100.0}},{"county_name":"Rockland","proportion":{"LIS":29239.0,"LIF":19192.0,"non-medicaid":228655.0}},{"county_name":"Saratoga","proportion":{"LIS":23873.0,"LIF":12399.0,"non-medicaid":179532.0}},{"county_name":"Schenectady","proportion":{"LIS":17259.0,"LIF":10760.0,"non-medicaid":119525.0}},{"county_name":"Schoharie","proportion":{"LIS":3515.0,"LIF":1917.0,"non-medicaid":21148.0}},{"county_name":"Schuyler","proportion":{"LIS":2043.0,"LIF":1280.0,"non-medicaid":12935.0}},{"county_name":"Seneca","proportion":{"LIS":3939.0,"LIF":2300.0,"non-medicaid":23373.0}},{"county_name":"St Lawrence","proportion":{"LIS":11003.0,"LIF":6414.0,"non-medicaid":64515.0}},{"county_name":"Steuben","proportion":{"LIS":11050.0,"LIF":6574.0,"non-medicaid":67156.0}},{"county_name":"Suffolk","proportion":{"LIS":155519.0,"LIF":92018.0,"non-medicaid":1212687.0}},{"county_name":"Sullivan","proportion":{"LIS":8063.0,"LIF":4849.0,"non-medicaid":49754.0}},{"county_name":"Tioga","proportion":{"LIS":5367.0,"LIF":3270.0,"non-medicaid":35811.0}},{"county_name":"Tompkins","proportion":{"LIS":8001.0,"LIF":5193.0,"non-medicaid":63956.0}},{"county_name":"Ulster","proportion":{"LIS":19657.0,"LIF":11678.0,"non-medicaid":129859.0}},{"county_name":"Warren","proportion":{"LIS":8314.0,"LIF":4959.0,"non-medicaid":51137.0}},{"county_name":"Washington","proportion":{"LIS":6663.0,"LIF":4120.0,"non-medicaid":43401.0}},{"county_name":"Wayne","proportion":{"LIS":9991.0,"LIF":6230.0,"non-medicaid":69113.0}},{"county_name":"Westchester","proportion":{"LIS":93017.0,"LIF":52655.0,"non-medicaid":762568.0}},{"county_name":"Wyoming","proportion":{"LIS":4288.0,"LIF":2473.0,"non-medicaid":28197.0}},{"county_name":"Yates","proportion":{"LIS":2832.0,"LIF":1668.0,"non-medicaid":16786.0}},];
+
+var tF = ['LIS','LIF','non-medicaid'].map(function(d){ 
+        return {type:d, freq:d3.sum(incomeData.map(function(t){ return t.proportion[d];}))}; 
+    }); 
+
+var margin = {top: 20, right: 50, bottom: 40, left: 30},
+    width = window.innerWidth - margin.left - margin.right,
+    height = window.innerHeight - margin.top - margin.bottom;
+
+var x = d3.scale.linear()
+    .range([0, width]);
+
+var y = d3.scale.ordinal()
+    .rangeRoundBands([0, height], 0.1);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("top");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .tickSize(0)
+    .tickPadding(6);
+
+x.domain(d3.extent(data, function(d) { return d.difference_in_rates; }));
+y.domain(data.map(function(d) { return d.patient_county_name; }));
+
+var tooltip = d3.select("body")
+    .append('div')
+    .attr('class', 'tooltip');
+
+tooltip.append('div')
+    .attr('class', 'County');
+tooltip.append('div')
+    .attr('class', 'Medicaid');
+tooltip.append('div')
+    .attr('class', 'All-payer');
+tooltip.append('div')
+    .attr('class', 'Difference');
+
+var svg = d3.select("body").append("svg")
+    .attr("width", window.innerWidth)
+    .attr("height", window.innerHeight)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.append("text")
+    .attr("x", (window.innerWidth / 2))             
+    .attr("text-anchor", "middle")  
+    .style("font-size", "14px") 
+    .style("font-family", "Courier")
+    .text("Difference in Medicaid PPV Rate v.s. All-Payer PPV Rate");
+
+// svg.append("g")
+//     .attr("class", "x axis");
+//     .call(xAxis);
+
+svg.append("g")
+    .attr("class", "y axis")
+    .attr("transform", "translate(" + x(0) + ",0)")
+    .call(yAxis);
+
+svg.selectAll(".bar")
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr("class", function(d) { return "bar bar-" + (d.difference_in_rates < 0 ? "negative" : "positive"); })
+    .attr("x", function(d) { return x(Math.min(0, d.difference_in_rates)); })
+    .attr("y", function(d) { return y(d.patient_county_name); })
+    .attr("width", function(d) { return Math.abs(x(d.difference_in_rates) - x(0)); })
+    .on('mouseover', mouseover)
+    .on('mouseout', mouseout)
+    .transition()
+    .duration(1000)
+    .delay(function(d, i) {
+        return i * 50;
+    })
+    .attr("height", y.rangeBand());
+
+// d3.select("#byAGI").on("click", function() {
+//     data.sort(function(a, b) {
+//         return d3.descending(a.ny_agi_of_all_returns_in_thousands, b.ny_agi_of_all_returns_in_thousands)
+//     })
+
+//     y.domain(data.map(function(d) { return d.patient_county_name; }));
+    
+//     svg.selectAll(".bar")
+//         .transition()
+//         .duration(500)
+//         .attr("y", function(d) { return y(d.patient_county_name); });
+
+//     svg.selectAll(".y")
+//         .transition()
+//         .duration(500)
+//         .attr("transform", "translate(" + x(0) + ",0)");
+// });
+
+var pC = pieChart(tF);
+
+function segColor(c){ return {"LIS" : "#41ab5d", "LIF" : "#e08214", "non-medicaid" : "#807dba"}[c]; }
+
+function type(d) {
+  d.difference_in_rates = +d.difference_in_rates;
+  return d;
+}
+
+function mouseover(d){  // utility function to be called on mouseover.
+    if(!d.difference_in_rates)return null;
+
+    tooltip.select('.County').html("<span><strong>"
+                                    + d.patient_county_name + "</strong></span>");
+    tooltip.select('.Medicaid').html("Medicaid rate: <span style='color:red'>"
+                                    + d.observed_rate_per_100_medicaid + "</span>");
+    tooltip.select('.All-payer').html("All Payer rate: <span style='color:red'>"
+                                    + d.observed_rate_per_100_all_payer + "</span>");
+    tooltip.select('.Difference').html("Difference: <span style='color:red'>"
+                                    + d.difference_in_rates + "</span>");
+
+    tooltip.style('display', 'block');
+    tooltip.style('opacity',2);
+
+    // filter for selected state.
+    var income = incomeData.filter(function(s){ return s.county_name == d.patient_county_name;}),
+        nD = ['LIS','LIF','non-medicaid'].map(function(s){ return {type:s, freq:income[0].proportion[s]};});
+
+    // call update functions of pie-chart and legend.    
+    pC.update(nD);
+}
+
+function mouseout(d){    // utility function to be called on mouseout.
+    tooltip.style('display', 'none');
+    tooltip.style('opacity',0);
+    // reset the pie-chart and legend.   
+    pC.update(tF);
+}
+
+// function to handle pieChart.
+function pieChart(pD){
+    var pC ={},
+        pieDim ={w:650, h: 250};
+    pieDim.r = Math.min(pieDim.w-20, pieDim.h-20) / 2;
+            
+    // create svg for pie chart.
+    var piesvg = d3.select("body")
+        .append("svg")
+        .attr("class", "pie")
+        .attr("width", pieDim.w)
+        .attr("height", pieDim.h)
+        .append("g")
+        .attr("transform", "translate("+pieDim.w/2+","+pieDim.h/2+")");
+    
+    piesvg.append("text")
+        // .attr("x", (pieDim.w / 2))    
+        .attr("y", (pieDim.h*6/13))         
+        .attr("text-anchor", "middle")  
+        .style("font-size", "14px") 
+        .style("font-family", "Courier")
+        .text("Income Class Proportion");
+        
+    // create function to draw the arcs of the pie slices.
+    var arc = d3.svg.arc()
+        .outerRadius(pieDim.r - 10)
+        .innerRadius(0);
+
+    var label = d3.svg.arc()
+        .outerRadius(pieDim.r - 40)
+        .innerRadius(pieDim.r - 40);
+
+    // create a function to compute the pie slice angles.
+    var pie = d3.layout.pie()
+        .sort(null)
+        .value(function(d) { return d.freq; });
+
+    // Draw the pie slices.
+    var arcs = piesvg.selectAll("g.slice")
+        .data(pie(pD))
+        .enter()
+        .append("g")                //create a group to hold each slice (we will have a <path> and a <text> element associated with each slice)
+        .attr("class", "slice");
+
+    arcs.append("path")
+        .data(pie(pD))
+        .attr("d", arc)
+        .each(function(d) { this._current = d; })
+        .style("fill", function(d) { return segColor(d.data.type); })
+        .style("stroke", "#FFF")
+        .style("stroke-width", "2");
+
+    text = arcs.append("text")
+        .data(pie(pD))
+        .attr("dy", ".35em")
+        .text(function(d) { 
+            if(d.data.type == 'LIS') return 'Low Income Single'
+            else if(d.data.type == 'LIF') return 'Low Income Family'
+            else return 'Not Qualified for Medicaid'; });
+
+    function midAngle(d){
+		return d.startAngle + (d.endAngle - d.startAngle)/2;
+	}
+
+    var outerArc = d3.svg.arc()
+        .innerRadius(pieDim.r * 0.9)
+        .outerRadius(pieDim.r * 0.9);
+
+	text.transition()
+        .duration(1000)
+		.attrTween("transform", function(d) {
+			this._current = this._current || d;
+			var interpolate = d3.interpolate(this._current, d);
+			this._current = interpolate(0);
+			return function(t) {
+				var d2 = interpolate(t);
+				var pos = outerArc.centroid(d2);
+				pos[0] = pieDim.r * (midAngle(d2) < Math.PI ? 1 : -1);
+				return "translate("+ pos +")";
+			};
+		})
+		.styleTween("text-anchor", function(d){
+			this._current = this._current || d;
+			var interpolate = d3.interpolate(this._current, d);
+			this._current = interpolate(0);
+			return function(t) {
+				var d2 = interpolate(t);
+				return midAngle(d2) < Math.PI ? "start":"end";
+			};
+		});
+
+    text.exit()
+        .remove();
+    
+    arcs.append("g").attr("class", "lines");
+
+    var polyline = arcs.select(".lines").select("polyline")
+		.data(pie(pD), function(d){ return d.data.type; });
+	
+	polyline.enter()
+		.append("polyline");
+
+	polyline.transition().duration(1000)
+		.attrTween("points", function(d){
+			this._current = this._current || d;
+			var interpolate = d3.interpolate(this._current, d);
+			this._current = interpolate(0);
+			return function(t) {
+				var d2 = interpolate(t);
+				var pos = outerArc.centroid(d2);
+				pos[0] = pieDim.r * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
+				return [arc.centroid(d2), outerArc.centroid(d2), pos];
+			};			
+		});
+	
+	polyline.exit()
+		.remove();
+
+    // create function to update pie-chart. This will be used by histogram.
+    pC.update = function(nD){
+        piesvg.selectAll("path")
+            .data(pie(nD))
+            .transition()
+            .duration(500)
+            .attrTween("d", arcTween);
+
+        text.transition()
+            .duration(1000)
+            .attrTween("transform", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    var pos = outerArc.centroid(d2);
+                    pos[0] = pieDim.r * (midAngle(d2) < Math.PI ? 1 : -1);
+                    return "translate("+ pos +")";
+                };
+            })
+            .styleTween("text-anchor", function(d){
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    return midAngle(d2) < Math.PI ? "start":"end";
+                };
+            });
+
+        text.exit()
+            .remove();
+    }        
+    
+    // Animating the pie-slice requiring a custom function which specifies
+    // how the intermediate paths should be drawn.
+    function arcTween(a) {
+        var i = d3.interpolate(this._current, a);
+        this._current = i(0);
+        return function(t) { return arc(i(t));    };
+    }   
+
+    return pC;
+}
+
+</script>

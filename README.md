@@ -13,8 +13,11 @@
   - [Heatmap](<http://bl.ocks.org/crystalxs/raw/35eecc7457e88fd5147075da17a5adfe/>) [echarts.js]
   - [Scatter plot](<http://bl.ocks.org/crystalxs/raw/251c802fba71380e50b443eb8de9c627/>) [echarts.js]
   - [Stacked Area plot](<http://bl.ocks.org/crystalxs/raw/bf6a5fe73c5c904f011116199de5596a/>) [echarts.js]
+  - Chloroplethmap [Tableau]
+  - Bubble Map [Tableau]
+  - Histogram [Tableau | matplotlib]
+  - Treemap [matplotlib]
 - [Summary](#Summary)
-
 ## Project Goal <a name="goal"/>
 
 For this project, I tried to see whether the low-income class has a higher preventable emergency visits rate.
@@ -24,8 +27,8 @@ For this project, I tried to see whether the low-income class has a higher preve
 There are two kinds of datasets. One is a **potentially preventable emergency visit rates** that includes a list of PPV rates for each county in NY states. The other is a **income tax** that includes income class, number of returns for each county in NY states.
 
 - **Potentially Preventable Emergency Visit Rates**
-  - [All-Payer Potentially Preventable Emergency Visit (PPV) Rates by Patient County]([https://health.data.ny.gov/Health/All-Payer-Potentially-Preventable-Emergency-Visit-/f8ue-xzy3)
-  - [Medicaid Potentially Preventable Emergency Visit (PPV) Rates by Patient County]([https://health.data.ny.gov/Health/Medicaid-Potentially-Preventable-Emergency-Visit-P/cr7a-34ka)
+  - [All-Payer Potentially Preventable Emergency Visit (PPV) Rates by Patient County](https://health.data.ny.gov/Health/All-Payer-Potentially-Preventable-Emergency-Visit-/f8ue-xzy3)
+  - [Medicaid Potentially Preventable Emergency Visit (PPV) Rates by Patient County](https://health.data.ny.gov/Health/Medicaid-Potentially-Preventable-Emergency-Visit-P/cr7a-34ka)
 - **Income Tax**
   - [Income Tax Components of Full-Year Residents by Size of Income and County](https://data.ny.gov/Government-Finance/Income-Tax-Components-of-Full-Year-Residents-by-Si/5kgr-h5g5)
 

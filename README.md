@@ -7,7 +7,12 @@
 - [Exploratory Data Analysis](https://docs.google.com/document/d/1kwXIztnYbjfju0v7osqFrYqOxr3-E5eCLpB7uJw3Bag/edit?usp=sharing)
   - [Data Cleaning](<https://github.com/crystalxs/PPV-vs-income/blob/master/preprocessing.ipynb>)
   - [EDA](<https://github.com/crystalxs/PPV-vs-income/blob/master/preprocessing.ipynb>)
-  - [Feature Engineering](<https://github.com/crystalxs/PPV-vs-income/blob/master/preprocessing.ipynb>)
+- Visualizations
+  - [Dashboard](<http://bl.ocks.org/crystalxs/raw/fefbdc8532204b591866ce17f6f25614/>) [d3.js]
+  - [Boxplot](<http://bl.ocks.org/crystalxs/raw/8020c7705ebb9f969d104d868dbaa0f7/>) [echarts.js]
+  - [Heatmap](<http://bl.ocks.org/crystalxs/raw/35eecc7457e88fd5147075da17a5adfe/>) [echarts.js]
+  - [Scatter plot](<http://bl.ocks.org/crystalxs/raw/251c802fba71380e50b443eb8de9c627/>) [echarts.js]
+  - [Stacked Area plot](<http://bl.ocks.org/crystalxs/raw/bf6a5fe73c5c904f011116199de5596a/>) [echarts.js]
 - [Summary](#Summary)
 
 ## Project Goal <a name="goal"/>

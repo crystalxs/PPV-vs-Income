@@ -5,8 +5,8 @@
 - [Project Goal](#goal)
 - [Data Source](#source)
 - [Exploratory Data Analysis](https://docs.google.com/document/d/1kwXIztnYbjfju0v7osqFrYqOxr3-E5eCLpB7uJw3Bag/edit?usp=sharing)
-  - [Data Cleaning](<https://github.com/crystalxs/PPV-vs-income/blob/master/preprocessing.ipynb>)
-  - [EDA](<https://github.com/crystalxs/PPV-vs-income/blob/master/EDA.ipynb>)
+  - [Data Cleaning](<https://github.com/crystalxs/PPV-vs-Income/blob/master/Preprocessing.ipynb>)
+  - [EDA](<https://github.com/crystalxs/PPV-vs-Income/blob/master/EDA.ipynb>)
 - [Summary](#Summary)
 
 ## Project Goal <a name="goal"/>
